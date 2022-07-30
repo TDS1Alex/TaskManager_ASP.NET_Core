@@ -7,23 +7,9 @@ namespace TaskManager.Storage
     {
         public DbSet<Task> Task { get; set; } = null!;
 
-        private readonly DbStorage _storage;
+        public DbStorage(DbContextOptions<DbStorage> options)
+            : base(options) { Database.EnsureCreated(); }
 
-        public DbStorage(DbStorage storage)
-        {
-            _storage = storage;
-            Database.EnsureCreated();
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlite("Data Source=Task-Manager.db");
-        }
-
-        public void Add_Save(Task task)
-        {
-            _storage.Task.Add(task);
-            _storage.SaveChanges();
-        }
+        public void SaveChange() => SaveChanges();
     }
 }
