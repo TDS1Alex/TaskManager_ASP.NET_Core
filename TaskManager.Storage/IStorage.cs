@@ -7,6 +7,6 @@ namespace TaskManager.Storage
     {
         DbSet<Task> Task { get; set; }
 
-        void Add_Save(Task task);
+        void SaveChange();
     }
 }

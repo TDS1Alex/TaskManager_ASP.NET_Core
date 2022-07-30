@@ -10,7 +10,7 @@ using TaskManager.Storage;
 
 namespace TaskManager.App.CQRS.Query
 {
-    public class TaskListQueryHandler: IRequestHandler<TaskListQuery, TaskDto>
+    public class TaskListQueryHandler: IRequestHandler<TaskListQuery, ListDto<TaskDto>>
     {
         private readonly IStorage _storage;
 
@@ -19,21 +19,27 @@ namespace TaskManager.App.CQRS.Query
             _storage = storage;
         }
 
-        public Task<TaskDto> Handle(TaskListQuery request, CancellationToken cancellationToken)
+        public Task<ListDto<TaskDto>> Handle(TaskListQuery request, CancellationToken cancellationToken)
         {
-            var users = _storage.Task.ToList();
+            var tasks = _storage.Task.ToList();
             DateTime dateReceiving = DateTime.Now;
 
-            var result = users.Select(task => new TaskDto()
+            var result = tasks.Select(task => new TaskDto()
             {
                 Id = task.Id,
                 Name = task.Name,
                 Description = task.Description,
                 Status = task.Status,                   
                 TaskTime = dateReceiving - task.DateCreated
-            });
+            }).ToArray();
 
-            return (Task<TaskDto>)result;
+            var list = new ListDto<TaskDto>
+            {
+                Count = result.Length,
+                Items = result
+            };
+
+            return list;
         }
     }
 }

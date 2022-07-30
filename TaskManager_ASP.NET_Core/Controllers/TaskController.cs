@@ -11,7 +11,7 @@ namespace TaskManager_ASP.NET_Core.Controller
     [Route("task/")]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [Authorize]
+    //[Authorize]
     public class TaskController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -20,10 +20,10 @@ namespace TaskManager_ASP.NET_Core.Controller
             _mediator = mediator;
         }
 
-        [ProducesResponseType(typeof(TaskDto), 200)]
+        [ProducesResponseType(typeof(Result), 200)]
         [ProducesResponseType(typeof(string), 400)]
         [HttpPost("add")]
-        public async Task<TaskDto> Add([FromBody] AddTaskCommand query)
+        public async Task<Result> Add([FromBody] AddTaskCommand query)
         {
             return await _mediator.Send(query);
         }
