@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Notes.App.Dtos.Notes
+namespace TaskManager.App.Dtos
 {
     public class ListDto <T>
     {

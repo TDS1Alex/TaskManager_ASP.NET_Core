@@ -1,10 +1,9 @@
 ﻿using MediatR;
 using TaskManager.App.Dtos;
-using TaskManager.Domain;
 
-namespace TaskManager.App.CQRS.Command
+namespace TaskManager.App.CQRS.Command.AddTask
 {
-    public class AddTaskCommand : IRequest<TaskDto>
+    public class AddTaskCommand : IRequest<Result>
     {      
         public int Id { get; set; }
         public string? Name { get; set; }

@@ -18,6 +18,7 @@ using System.Reflection;
 using TaskManager.Storage;
 using Notes.App.Service.HashPassword;
 using Auth.Common;
+using Microsoft.EntityFrameworkCore;
 
 namespace TaskManager_ASP.NET_Core
 {
@@ -30,7 +31,6 @@ namespace TaskManager_ASP.NET_Core
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -64,31 +64,31 @@ namespace TaskManager_ASP.NET_Core
             services.AddMediatR(typeof(Startup));
             services.AddMediatR(Assembly.GetExecutingAssembly(), typeof(IStorage).Assembly, typeof(IHttpContextAccessor).Assembly);
             services.AddSingleton<IHashingPasswordService, HashingPasswordService>();
-            services.AddDbContextPool<IStorage, DbStorage>(options =>
+            services.AddDbContextPool<IStorage, DbStorage> (options =>
             {
-                options.UseNpgsql("Host=localhost;Port=5432;Database=notesdb;Username=;Password=t1234567t");
+                options.UseSqlServer("Server=(localdb)\\mssqllocaldb; Database=tasksdb; Username=sqlserver; Password=t1234567t; Trusted_Connection=True;");
             }, 16);
 
-            var authOptionsCofiguration = Configuration.GetSection("Auth").Get<AuthOptions>();
-            services.AddSingleton(authOptionsCofiguration);
+            //var authOptionsCofiguration = Configuration.GetSection("Auth").Get<AuthOptions>();
+            //services.AddSingleton(authOptionsCofiguration);
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).
-                AddJwtBearer(options =>
-                {
-                    var authOptions = authOptionsCofiguration;
-                    options.RequireHttpsMetadata = false;
-                    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidIssuer = authOptions.Issure,
-                        ValidateAudience = false,
-                        ValidateActor = false,
-                        ValidateLifetime = true,
-                        IssuerSigningKey = authOptions.GetSymmetricSecurityKey(),
-                        ValidateIssuerSigningKey = true
-                    };
-                }
-                );
+            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).
+            //    AddJwtBearer(options =>
+            //    {
+            //        var authOptions = authOptionsCofiguration;
+            //        options.RequireHttpsMetadata = false;
+            //        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+            //        {
+            //            ValidateIssuer = true,
+            //            ValidIssuer = authOptions.Issure,
+            //            ValidateAudience = false,
+            //            ValidateActor = false,
+            //            ValidateLifetime = true,
+            //            IssuerSigningKey = authOptions.GetSymmetricSecurityKey(),
+            //            ValidateIssuerSigningKey = true
+            //        };
+            //    }
+            //    );
 
         }
 
@@ -107,8 +107,8 @@ namespace TaskManager_ASP.NET_Core
 
             app.UseRouting();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
+            //app.UseAuthentication();
+            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

@@ -19,7 +19,7 @@ namespace TaskManager.App.CQRS.Query
             _storage = storage;
         }
 
-        public Task<ListDto<TaskDto>> Handle(TaskListQuery request, CancellationToken cancellationToken)
+        public async Task<ListDto<TaskDto>> Handle(TaskListQuery request, CancellationToken cancellationToken)
         {
             var tasks = _storage.Task.ToList();
             DateTime dateReceiving = DateTime.Now;

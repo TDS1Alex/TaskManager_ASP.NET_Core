@@ -9,9 +9,9 @@ using TaskManager.App.Dtos;
 using TaskManager.Domain;
 using TaskManager.Storage;
 
-namespace TaskManager.App.CQRS.Command
+namespace TaskManager.App.CQRS.Command.AddTask
 {
-    class AddTaskCommandHandler : IRequestHandler<AddTaskCommand, TaskDto>
+    class AddTaskCommandHandler : IRequestHandler<AddTaskCommand, Result>
     {
         private readonly IStorage _storage;
 
@@ -20,7 +20,7 @@ namespace TaskManager.App.CQRS.Command
             _storage = storage;
         }
 
-        public async Task<TaskDto> Handle(AddTaskCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(AddTaskCommand request, CancellationToken cancellationToken)
         {
             var task = new Domain.Task()
             {
@@ -30,17 +30,19 @@ namespace TaskManager.App.CQRS.Command
                 DateCreated = DateTime.Now,
                 Description = request.Description
             };
+            _storage.Task.Add(task);
 
-            _storage.Add_Save(task);
+            Statuses statuses = new Statuses();
+            if (task.Status == statuses.InPlans) statuses.InPlans = task.Status;
+            else if (task.Status == statuses.InProcess) statuses.InProcess = task.Status;
+            else if (task.Status == statuses.Stopped) statuses.Stopped = task.Status;
+            else if (task.Status == statuses.Done) statuses.Done = task.Status;
+            else statuses.StatusNoSet = task.Status;
+            _storage.TaskStatus.Add(statuses);
 
-            return new TaskDto() 
-            { 
-                Id = task.Id, 
-                Name = task.Name, 
-                Status = task.Status, 
-                DateTimeTask = task.DateCreated, 
-                Description = task.Description
-            };
+            _storage.SaveChange();
+
+            return new Result() {Status = HttpStatus.Ok};
         }
     }
 }

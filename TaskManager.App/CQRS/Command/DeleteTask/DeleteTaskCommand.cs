@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MediatR;
+using TaskManager.App.Dtos;
 
 namespace TaskManager.App.CQRS.Command.DeleteTask
 {
-    class DeleteTaskCommand
+    public class DeleteTaskCommand: IRequest<Result>
     {
+        public int TaskId { get; set; }
     }
 }

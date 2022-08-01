@@ -8,7 +8,7 @@ using TaskManager.App.Dtos;
 
 namespace TaskManager.App.CQRS.Query
 {
-    public class TaskListQuery : IRequest<TaskDto>
+    public class TaskListQuery : IRequest<ListDto<TaskDto>>
     {
         public int Id { get; set; }
         public string? Name { get; set; }
